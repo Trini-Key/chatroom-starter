@@ -50,6 +50,7 @@ public class WebSocketChatServer {
         Message message = new Message();
         message.setName(session.getId());
         message.setMessage(message.getName() + " connected!");
+        message.setOnlineCount(String.valueOf(onlineSessions.size()));
         sendMessageToAll(message.getMessage());
     }
 

@@ -21,57 +21,62 @@ public class Message {
 
     }
 
-    public Message(String message){
+    public Message(String message) {
         this.message = message;
     }
 
-    public Message(String message, String name, String type){
+    public Message(String message, String name, String type) {
         this.message = message;
         this.name = name;
         this.type = type;
     }
 
-    public Message(String message, String name, String type, String onlineCount){
+    public Message(String message, String name, String type, String onlineCount) {
         this.message = message;
         this.name = name;
         this.type = type;
         this.onlineCount = onlineCount;
     }
 
-    public Message(String name, String message){
+    public Message(String name, String message) {
         this.message = message;
         this.name = name;
     }
 
-    public String getMessage(){
+    @Override
+    public String toString(){
+        return super.toString();
+    }
+
+    public String getMessage() {
         return message;
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
-    public String getType(){
+    public String getType() {
         return type;
     }
 
-    public String getOnlineCount(){
+    public String getOnlineCount() {
         return onlineCount;
     }
 
-    public void setMessage(String message){
+    public void setMessage(String message) {
         this.message = message;
     }
 
-    public void setName(String name){
+    public void setName(String name) {
         this.name = name;
     }
 
-    public void setType(String type){
+    public void setType(String type) {
         this.type = type;
     }
 
-    public void setOnlineCount(String onlineCount){
+    public void setOnlineCount(String onlineCount) {
         this.onlineCount = onlineCount;
     }
 

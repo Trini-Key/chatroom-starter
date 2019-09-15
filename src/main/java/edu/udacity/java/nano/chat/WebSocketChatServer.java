@@ -1,5 +1,10 @@
 package edu.udacity.java.nano.chat;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.google.gson.Gson;
+import jdk.nashorn.internal.parser.JSONParser;
+import jdk.nashorn.internal.scripts.JS;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
@@ -16,7 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 
 @Component
-@ServerEndpoint(value = "/chat", encoders = MessageEncoder.class, decoders = MessageDecoder.class)
+@ServerEndpoint("/chat")
 public class WebSocketChatServer {
 
     /**
@@ -24,15 +29,13 @@ public class WebSocketChatServer {
      */
     private static Map<String, Session> onlineSessions = new ConcurrentHashMap<>();
 
-    private static void sendMessageToAll(String msg) {
+    private static void sendMessageToAll(Message msg) {
         //TODO: add send message method.
-        System.out.println(msg);
-
-        for (Map.Entry<String, Session> entry : onlineSessions.entrySet()) {
-            try {
-                System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
-                entry.getValue().getBasicRemote().sendObject(msg);
-            } catch (IOException | EncodeException e) {
+        for (Session s : onlineSessions.values()){
+            try{
+                System.out.println(JSON.toJSONString(msg));
+                s.getBasicRemote().sendText(JSON.toJSONString(msg));
+            }catch(IOException e){
                 e.printStackTrace();
             }
         }
@@ -47,11 +50,10 @@ public class WebSocketChatServer {
         //TODO: add on open connection.
         //Every time a new session is created add it to HashMap onlineSessions
         onlineSessions.put(session.getId(), session);
-        Message message = new Message();
-        message.setName(session.getId());
-        message.setMessage(message.getName() + " connected!");
-        message.setOnlineCount(String.valueOf(onlineSessions.size()));
-        sendMessageToAll(message.getMessage());
+        Message newUser = new Message();
+        newUser.setMessage("Connected!");
+        newUser.setOnlineCount(onlineSessions.size());
+        sendMessageToAll(newUser);
     }
 
     /**
@@ -62,10 +64,14 @@ public class WebSocketChatServer {
         //TODO: add send message.
         //Create a new Message object from jsonStr
         //sendMessageToAll(message);
-
-        Message message = new Message(jsonStr);
-        message.setName(session.getPathParameters().get("username"));
-        sendMessageToAll(message.getMessage());
+        //by default update the onlinecount for each message
+        //If message type = speak do something if not just update online count
+       Message userMsg = JSON.parseObject(jsonStr, Message.class);
+        userMsg.setOnlineCount(onlineSessions.size());
+        if(userMsg.getMessage() != null){
+            userMsg.setType("SPEAK");
+        }
+        sendMessageToAll(userMsg);
     }
 
     /**
@@ -75,10 +81,11 @@ public class WebSocketChatServer {
     public void onClose(Session session) throws IOException, EncodeException {
         //TODO: add close connection.
         //Every time a session is closed remove it from HashMap onlineSessions
-        System.out.println(session.getBasicRemote().getSendStream().toString());
-        session.close();
-        sendMessageToAll(session.getId() + " Disconnected");
-        onlineSessions.remove(session.getId(), session);
+        onlineSessions.remove(session.getId());
+        Message signOff = new Message();
+        signOff.setOnlineCount(onlineSessions.size());
+        signOff.setMessage("Disconnected!");
+        sendMessageToAll(signOff);
     }
 
     /**

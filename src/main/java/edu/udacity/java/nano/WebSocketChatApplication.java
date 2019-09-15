@@ -33,7 +33,6 @@ public class WebSocketChatApplication {
         //TODO: add code for login to chatroom.
         ModelAndView chatSession = new ModelAndView("/chat");
         chatSession.addObject("username", username);
-        chatSession.addObject("url", "ws://localhost:" + request.getServerPort() + request.getContextPath() + "/chat");
         return chatSession;
     }
 }

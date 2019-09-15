@@ -1,5 +1,7 @@
 package edu.udacity.java.nano.chat;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.annotation.JSONField;
 import com.google.gson.Gson;
 
 import javax.websocket.EncodeException;
@@ -12,23 +14,15 @@ import javax.websocket.EndpointConfig;
 
 public class Message {
     // TODO: add message model.
+    @JSONField(name = "msg")
     private String message;
+    @JSONField(name = "username")
     private String name;
     private String type;
     private String onlineCount;
 
     public Message() {
 
-    }
-
-    public Message(String message) {
-        this.message = message;
-    }
-
-    public Message(String message, String name, String type) {
-        this.message = message;
-        this.name = name;
-        this.type = type;
     }
 
     public Message(String message, String name, String type, String onlineCount) {
@@ -38,14 +32,8 @@ public class Message {
         this.onlineCount = onlineCount;
     }
 
-    public Message(String name, String message) {
-        this.message = message;
-        this.name = name;
-    }
-
-    @Override
-    public String toString(){
-        return super.toString();
+    public static String jsonToString(String type, String username, String message, int onlineCount) {
+        return JSON.toJSONString(new Message(message, username, type, String.valueOf(onlineCount)));
     }
 
     public String getMessage() {
@@ -76,9 +64,8 @@ public class Message {
         this.type = type;
     }
 
-    public void setOnlineCount(String onlineCount) {
-        this.onlineCount = onlineCount;
+    public void setOnlineCount(int onlineCount) {
+        this.onlineCount = String.valueOf(onlineCount);
     }
-
 }
 

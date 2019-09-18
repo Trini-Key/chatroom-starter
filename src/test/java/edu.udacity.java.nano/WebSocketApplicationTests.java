@@ -45,7 +45,6 @@ public class WebSocketApplicationTests {
                 .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("/login"));
     }
 

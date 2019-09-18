@@ -46,7 +46,7 @@ public class WebSocketChatServer {
      * Open connection, 1) add session, 2) add user.
      */
     @OnOpen
-    public void onOpen(Session session) throws IOException, EncodeException {
+    public void onOpen(Session session) {
         //TODO: add on open connection.
         //Every time a new session is created add it to HashMap onlineSessions
         onlineSessions.put(session.getId(), session);
@@ -60,7 +60,7 @@ public class WebSocketChatServer {
      * Send message, 1) get username and session, 2) send message to all.
      */
     @OnMessage
-    public void onMessage(Session session, String jsonStr) throws IOException, EncodeException {
+    public void onMessage(Session session, String jsonStr) {
         //TODO: add send message.
         //Create a new Message object from jsonStr
         //sendMessageToAll(message);
@@ -78,7 +78,7 @@ public class WebSocketChatServer {
      * Close connection, 1) remove session, 2) update user.
      */
     @OnClose
-    public void onClose(Session session) throws IOException, EncodeException {
+    public void onClose(Session session) {
         //TODO: add close connection.
         //Every time a session is closed remove it from HashMap onlineSessions
         onlineSessions.remove(session.getId());

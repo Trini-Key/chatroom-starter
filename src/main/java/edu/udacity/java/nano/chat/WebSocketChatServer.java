@@ -30,7 +30,6 @@ public class WebSocketChatServer {
     private static Map<String, Session> onlineSessions = new ConcurrentHashMap<>();
 
     private static void sendMessageToAll(Message msg) {
-        //TODO: add send message method.
         for (Session s : onlineSessions.values()){
             try{
                 System.out.println(JSON.toJSONString(msg));
@@ -47,11 +46,11 @@ public class WebSocketChatServer {
      */
     @OnOpen
     public void onOpen(Session session) {
-        //TODO: add on open connection.
         //Every time a new session is created add it to HashMap onlineSessions
         onlineSessions.put(session.getId(), session);
         Message newUser = new Message();
         newUser.setMessage("Connected!");
+        newUser.setType("ENTER");
         newUser.setOnlineCount(onlineSessions.size());
         sendMessageToAll(newUser);
     }
@@ -61,7 +60,6 @@ public class WebSocketChatServer {
      */
     @OnMessage
     public void onMessage(Session session, String jsonStr) {
-        //TODO: add send message.
         //Create a new Message object from jsonStr
         //sendMessageToAll(message);
         //by default update the onlinecount for each message
@@ -79,12 +77,12 @@ public class WebSocketChatServer {
      */
     @OnClose
     public void onClose(Session session) {
-        //TODO: add close connection.
         //Every time a session is closed remove it from HashMap onlineSessions
         onlineSessions.remove(session.getId());
         Message signOff = new Message();
         signOff.setOnlineCount(onlineSessions.size());
         signOff.setMessage("Disconnected!");
+        signOff.setType("LEAVE");
         sendMessageToAll(signOff);
     }
 

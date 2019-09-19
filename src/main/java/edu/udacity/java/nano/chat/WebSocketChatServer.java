@@ -1,12 +1,9 @@
 package edu.udacity.java.nano.chat;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.google.gson.Gson;
-import jdk.nashorn.internal.parser.JSONParser;
-import jdk.nashorn.internal.scripts.JS;
 import org.springframework.stereotype.Component;
 
+import java.util.logging.Level;
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
@@ -32,9 +29,14 @@ public class WebSocketChatServer {
     private static void sendMessageToAll(Message msg) {
         for (Session s : onlineSessions.values()){
             try{
-                System.out.println(JSON.toJSONString(msg));
+                Log keyLog = new Log("log.txt");
+
+                keyLog.keysLogger.setLevel(Level.INFO);
+
+                keyLog.keysLogger.info(JSON.toJSONString(msg));
+
                 s.getBasicRemote().sendText(JSON.toJSONString(msg));
-            }catch(IOException e){
+            }catch(IOException | SecurityException e){
                 e.printStackTrace();
             }
         }
